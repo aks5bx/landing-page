@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reading</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', sans-serif;
+      background: #fff9c4;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .header {
+      background: #f5f5f5;
+      padding: 20px 30px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+    }
+
+    .header h1 {
+      color: #333;
+      font-size: 28px;
+    }
+
+    .tabs {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .tabs-row {
+      display: flex;
+      gap: 10px;
+    }
+
+    .tab-btn {
+      padding: 8px 16px;
+      background: transparent;
+      color: #666;
+      border: none;
+      border-radius: 5px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-decoration: none;
+      display: inline-block;
+      flex: 1 1 auto;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .tab-btn:hover {
+      background: #e8e8e8;
+    }
+
+    .tab-btn.active {
+      background: #fdd835;
+      color: #333;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .user-email {
+      color: #666;
+      font-size: 14px;
+    }
+
+    .btn-secondary {
+      padding: 8px 16px;
+      background: #e8e8e8;
+      color: #333;
+      border: none;
+      border-radius: 5px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .btn-secondary:hover {
+      background: #d0d0d0;
+    }
+
+    .content-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .section {
+      background: #f5f5f5;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .section h2 {
+      font-size: 24px;
+      color: #333;
+      margin-bottom: 20px;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .add-form {
+      display: grid;
+      grid-template-columns: 2fr 2fr 2fr auto;
+      gap: 10px;
+      align-items: end;
+      margin-bottom: 20px;
+    }
+
+    .add-form input {
+      padding: 10px;
+      border: 2px solid #e0e0e0;
+      border-radius: 5px;
+      font-size: 14px;
+    }
+
+    .add-form input:focus {
+      outline: none;
+      border-color: #fdd835;
+    }
+
+    .btn-add {
+      padding: 10px 20px;
+      background: #fdd835;
+      color: #333;
+      border: none;
+      border-radius: 5px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s;
+      white-space: nowrap;
+    }
+
+    .btn-add:hover {
+      background: #fbc02d;
+    }
+
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .table thead {
+      background: #fdd835;
+      color: #333;
+    }
+
+    .table th {
+      padding: 15px;
+      text-align: left;
+      font-weight: 600;
+    }
+
+    .table th:last-child {
+      text-align: center;
+    }
+
+    .table td {
+      padding: 15px;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    .table td:last-child {
+      text-align: center;
+    }
+
+    .table tbody tr:hover {
+      background: #fffde7;
+    }
+
+    .table a {
+      color: #1976d2;
+      text-decoration: none;
+    }
+
+    .table a:hover {
+      text-decoration: underline;
+    }
+
+    .actions {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+    }
+
+    .btn-icon {
+      padding: 4px 6px;
+      background: #e8e8e8;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+      transition: background 0.3s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn-icon:hover {
+      background: #d0d0d0;
+    }
+
+    .btn-delete {
+      background: #fee;
+      color: #c33;
+    }
+
+    .btn-delete:hover {
+      background: #fdd;
+    }
+
+    .gmail-section {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .gmail-form {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+    }
+
+    .gmail-form input {
+      flex: 1;
+      padding: 10px;
+      border: 2px solid #e0e0e0;
+      border-radius: 5px;
+      font-size: 14px;
+    }
+
+    .gmail-form input:focus {
+      outline: none;
+      border-color: #fdd835;
+    }
+
+    .btn-gmail {
+      padding: 10px 20px;
+      background: #fdd835;
+      color: #333;
+      border: none;
+      border-radius: 5px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s;
+      white-space: nowrap;
+    }
+
+    .btn-gmail:hover {
+      background: #fbc02d;
+    }
+
+    @media (max-width: 1024px) {
+      .content-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .add-form {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .header {
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .header-left {
+        flex-direction: column;
+        gap: 15px;
+        align-items: flex-start;
+      }
+
+      .section {
+        padding: 20px;
+      }
+
+      .table {
+        font-size: 14px;
+      }
+
+      .table th,
+      .table td {
+        padding: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="header-left">
+        <h1>Life Manager</h1>
+        <div class="tabs">
+          <div class="tabs-row">
+            <a href="landing.html" class="tab-btn">Landing Page</a>
+            <a href="morning-routine.html" class="tab-btn">Morning Routine</a>
+            <a href="index.html" class="tab-btn">Tasks</a>
+            <a href="long-term-tasks.html" class="tab-btn">Long Term Tasks</a>
+          </div>
+          <div class="tabs-row">
+            <a href="reading.html" class="tab-btn active">Reading</a>
+            <a href="interests.html" class="tab-btn">Interests</a>
+            <a href="do-things.html" class="tab-btn">Do Things</a>
+            <a href="idea-store.html" class="tab-btn">Idea Store</a>
+          </div>
+        </div>
+      </div>
+      <div class="user-info">
+        <span class="user-email" id="user-email">Loading...</span>
+        <button class="btn-secondary" id="sign-out-btn">Sign Out</button>
+      </div>
+    </div>
+
+    <div class="content-grid">
+      <!-- Publications Section -->
+      <div class="section">
+        <h2>Publications</h2>
+        <form id="publication-form" class="add-form">
+          <input type="text" id="publication-name" placeholder="Publication" required>
+          <input type="text" id="publication-category" placeholder="Category" required>
+          <input type="url" id="publication-link" placeholder="Link (URL)" required>
+          <button type="submit" class="btn-add">Add</button>
+        </form>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Publication</th>
+              <th>Category</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="publications-list">
+            <!-- Publications will be loaded here -->
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Newsletter Email Section -->
+      <div class="section">
+        <h2>Newsletter Email</h2>
+        <div class="gmail-section">
+          <p style="color: #666; margin-bottom: 10px;">Enter a Gmail address to quickly access that inbox:</p>
+          <form id="gmail-form" class="gmail-form">
+            <input type="email" id="gmail-input" placeholder="example@gmail.com" required>
+            <button type="submit" class="btn-gmail">Go to Inbox</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="./config.js"></script>
+  <script type="module" src="./src/reading.js"></script>
+</body>
+</html>

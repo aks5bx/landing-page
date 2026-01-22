@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Landing Page</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', sans-serif;
+      background: #bbdefb;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .header {
+      background: #f5f5f5;
+      padding: 20px 30px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+    }
+
+    .header h1 {
+      color: #333;
+      font-size: 28px;
+    }
+
+    .tabs {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .tabs-row {
+      display: flex;
+      gap: 10px;
+    }
+
+    .tab-btn {
+      padding: 8px 16px;
+      background: transparent;
+      color: #666;
+      border: none;
+      border-radius: 5px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-decoration: none;
+      display: inline-block;
+      flex: 1 1 auto;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .tab-btn:hover {
+      background: #e8e8e8;
+    }
+
+    .tab-btn.active {
+      background: #2196f3;
+      color: white;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .user-email {
+      color: #666;
+      font-size: 14px;
+    }
+
+    .btn-secondary {
+      padding: 8px 16px;
+      background: #e8e8e8;
+      color: #333;
+      border: none;
+      border-radius: 5px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .btn-secondary:hover {
+      background: #d0d0d0;
+    }
+
+    .landing-content {
+      background: #f5f5f5;
+      padding: 40px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 40px;
+    }
+
+    .left-column {
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+    }
+
+    .right-column {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+    }
+
+    .section {
+      background: white;
+      padding: 25px;
+      border-radius: 10px;
+      position: relative;
+    }
+
+    .edit-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      padding: 4px 6px;
+      background: #2196f3;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+      transition: background 0.3s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .edit-btn:hover {
+      background: #1976d2;
+    }
+
+    .inline-edit-btn {
+      position: relative;
+      top: 0;
+      right: 0;
+      margin-left: auto;
+      flex-shrink: 0;
+    }
+
+    .section h2 {
+      font-size: 24px;
+      color: #333;
+      margin-bottom: 15px;
+      font-weight: 700;
+    }
+
+    .section-items {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .section-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      color: #555;
+      font-size: 16px;
+      line-height: 1.6;
+    }
+
+    .section-item::before {
+      content: '→';
+      color: #2196f3;
+      font-size: 18px;
+      flex-shrink: 0;
+    }
+
+    .habits-title {
+      font-size: 32px;
+      color: #333;
+      margin-bottom: 25px;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .habits-list {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .habit-item {
+      color: #555;
+      font-size: 18px;
+      line-height: 1.8;
+      padding: 15px;
+      background: #f9f9f9;
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    @media (max-width: 1024px) {
+      .landing-content {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .header {
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .header-left {
+        flex-direction: column;
+        gap: 15px;
+        align-items: flex-start;
+      }
+
+      .landing-content {
+        padding: 20px;
+      }
+
+      .habits-title {
+        font-size: 24px;
+      }
+
+      .habit-item {
+        font-size: 16px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="header-left">
+        <h1>Life Manager</h1>
+        <div class="tabs">
+          <div class="tabs-row">
+            <a href="landing.html" class="tab-btn active">Landing Page</a>
+            <a href="morning-routine.html" class="tab-btn">Morning Routine</a>
+            <a href="index.html" class="tab-btn">Tasks</a>
+            <a href="long-term-tasks.html" class="tab-btn">Long Term Tasks</a>
+          </div>
+          <div class="tabs-row">
+            <a href="reading.html" class="tab-btn">Reading</a>
+              <a href="interests.html" class="tab-btn">Interests</a>
+            <a href="do-things.html" class="tab-btn">Do Things</a>
+            <a href="idea-store.html" class="tab-btn">Idea Store</a>
+          </div>
+        </div>
+      </div>
+      <div class="user-info">
+        <span class="user-email" id="user-email">Loading...</span>
+        <button class="btn-secondary" id="sign-out-btn">Sign Out</button>
+      </div>
+    </div>
+
+    <div class="landing-content">
+      <div class="left-column" id="left-column">
+        <!-- Sections will be loaded here -->
+      </div>
+
+      <div class="right-column">
+        <h2 class="habits-title">Habits</h2>
+        <div class="habits-list" id="habits-list">
+          <!-- Habits will be loaded here -->
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="./config.js"></script>
+  <script type="module" src="./src/landing.js"></script>
+</body>
+</html>

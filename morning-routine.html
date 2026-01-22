@@ -1,0 +1,372 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Morning Routine</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', sans-serif;
+      background: #e3f2fd;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .header {
+      background: #f5f5f5;
+      padding: 20px 30px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+    }
+
+    .header h1 {
+      color: #333;
+      font-size: 28px;
+    }
+
+    .tabs {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .tabs-row {
+      display: flex;
+      gap: 10px;
+    }
+
+    .tab-btn {
+      padding: 8px 16px;
+      background: transparent;
+      color: #666;
+      border: none;
+      border-radius: 5px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-decoration: none;
+      display: inline-block;
+      flex: 1 1 auto;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .tab-btn:hover {
+      background: #e8e8e8;
+    }
+
+    .tab-btn.active {
+      background: #64b5f6;
+      color: white;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .user-email {
+      color: #666;
+      font-size: 14px;
+    }
+
+    .btn-secondary {
+      padding: 8px 16px;
+      background: #e8e8e8;
+      color: #333;
+      border: none;
+      border-radius: 5px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .btn-secondary:hover {
+      background: #d0d0d0;
+    }
+
+    .routine-content {
+      background: #f5f5f5;
+      padding: 40px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .current-time {
+      font-size: 48px;
+      font-weight: 700;
+      color: #1976d2;
+      text-align: center;
+      margin-bottom: 30px;
+      font-variant-numeric: tabular-nums;
+      letter-spacing: 2px;
+    }
+
+    .schedules-container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 30px;
+      margin-bottom: 40px;
+    }
+
+    .schedule-section {
+      background: white;
+      padding: 25px;
+      border-radius: 10px;
+      position: relative;
+    }
+
+    .edit-btn {
+      padding: 4px 6px;
+      background: #64b5f6;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+      transition: background 0.3s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .edit-btn:hover {
+      background: #42a5f5;
+    }
+
+    .delete-btn {
+      background: #fee;
+    }
+
+    .delete-btn:hover {
+      background: #fdd;
+    }
+
+    .section-edit-btn {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+    }
+
+    .schedule-section h2 {
+      font-size: 24px;
+      color: #333;
+      margin-bottom: 20px;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .schedule-items {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .schedule-item {
+      color: #555;
+      font-size: 16px;
+      line-height: 1.6;
+      padding: 10px 15px;
+      background: #f9f9f9;
+      border-radius: 8px;
+      border-left: 3px solid #64b5f6;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .schedule-item .edit-btn {
+      margin-left: auto;
+      flex-shrink: 0;
+    }
+
+    .workout-section {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+    }
+
+    .workout-section h2 {
+      font-size: 24px;
+      color: #333;
+      margin-bottom: 20px;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .workout-table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+
+    .workout-table thead {
+      background: #64b5f6;
+      color: white;
+    }
+
+    .workout-table th {
+      padding: 12px 15px;
+      text-align: left;
+      font-weight: 600;
+    }
+
+    .workout-table th:last-child {
+      text-align: center;
+    }
+
+    .workout-table td {
+      padding: 12px 15px;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    .workout-table td:last-child {
+      text-align: center;
+    }
+
+    .workout-table td:last-child > div {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .workout-table .edit-btn {
+      margin: 0;
+    }
+
+    .workout-table tbody tr:nth-child(even) {
+      background: #f9f9f9;
+    }
+
+    .workout-table tbody tr:hover {
+      background: #e3f2fd;
+    }
+
+    .dow-cell {
+      font-weight: 600;
+      color: #1976d2;
+    }
+
+    @media (max-width: 1024px) {
+      .schedules-container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .header {
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .header-left {
+        flex-direction: column;
+        gap: 15px;
+        align-items: flex-start;
+      }
+
+      .routine-content {
+        padding: 20px;
+      }
+
+      .workout-table {
+        font-size: 14px;
+      }
+
+      .workout-table th,
+      .workout-table td {
+        padding: 8px 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="header-left">
+        <h1>Life Manager</h1>
+        <div class="tabs">
+          <div class="tabs-row">
+            <a href="landing.html" class="tab-btn">Landing Page</a>
+            <a href="morning-routine.html" class="tab-btn active">Morning Routine</a>
+            <a href="index.html" class="tab-btn">Tasks</a>
+            <a href="long-term-tasks.html" class="tab-btn">Long Term Tasks</a>
+          </div>
+          <div class="tabs-row">
+            <a href="reading.html" class="tab-btn">Reading</a>
+            <a href="interests.html" class="tab-btn">Interests</a>
+            <a href="do-things.html" class="tab-btn">Do Things</a>
+            <a href="idea-store.html" class="tab-btn">Idea Store</a>
+          </div>
+        </div>
+      </div>
+      <div class="user-info">
+        <span class="user-email" id="user-email">Loading...</span>
+        <button class="btn-secondary" id="sign-out-btn">Sign Out</button>
+      </div>
+    </div>
+
+    <div class="routine-content">
+      <div class="current-time" id="current-time">00:00:00</div>
+
+      <div class="schedules-container">
+        <div class="schedule-section">
+          <h2 id="work-day-title">Work Day</h2>
+          <div class="schedule-items" id="work-day-schedule">
+            <!-- Work day schedule will be loaded here -->
+          </div>
+        </div>
+
+        <div class="schedule-section">
+          <h2 id="wfh-day-title">WFH Day</h2>
+          <div class="schedule-items" id="wfh-day-schedule">
+            <!-- WFH day schedule will be loaded here -->
+          </div>
+        </div>
+      </div>
+
+      <div class="workout-section">
+        <h2>Workout Schedule</h2>
+        <table class="workout-table">
+          <thead>
+            <tr>
+              <th>DOW</th>
+              <th>Workout</th>
+              <th>Notes</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="workout-schedule">
+            <!-- Workout schedule will be loaded here -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <script src="./config.js"></script>
+  <script type="module" src="./src/morning-routine.js"></script>
+</body>
+</html>

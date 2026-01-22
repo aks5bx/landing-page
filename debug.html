@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Debug - Life Manager</title>
+  <style>
+    body {
+      font-family: monospace;
+      padding: 20px;
+      background: #f5f5f5;
+    }
+    .test {
+      background: white;
+      padding: 15px;
+      margin: 10px 0;
+      border-radius: 5px;
+      border-left: 4px solid #ccc;
+    }
+    .test.pass {
+      border-left-color: #4caf50;
+    }
+    .test.fail {
+      border-left-color: #f44336;
+    }
+    .test h3 {
+      margin: 0 0 10px 0;
+    }
+    .test pre {
+      background: #f5f5f5;
+      padding: 10px;
+      overflow-x: auto;
+    }
+  </style>
+</head>
+<body>
+  <h1>Life Manager Debug Page</h1>
+  <p style="color: #666; font-size: 14px;">Version: 3.0 (using GitHub Variables)</p>
+  <div id="results"></div>
+
+  <script src="./config.js"></script>
+  <script type="module">
+    import { createClient } from 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/+esm';
+
+    const results = document.getElementById('results');
+
+    function addTest(title, status, details) {
+      const div = document.createElement('div');
+      div.className = `test ${status}`;
+      div.innerHTML = `
+        <h3>${status === 'pass' ? '✓' : '✗'} ${title}</h3>
+        <pre>${details}</pre>
+      `;
+      results.appendChild(div);
+    }
+
+    // Test 1: Check if config.js loaded
+    addTest(
+      'Config.js loaded',
+      window.SUPABASE_URL && window.SUPABASE_ANON_KEY ? 'pass' : 'fail',
+      `SUPABASE_URL: ${window.SUPABASE_URL ? 'SET (length: ' + window.SUPABASE_URL.length + ')' : 'NOT SET'}
+SUPABASE_ANON_KEY: ${window.SUPABASE_ANON_KEY ? 'SET (length: ' + window.SUPABASE_ANON_KEY.length + ')' : 'NOT SET'}`
+    );
+
+    // Test 2: Check URL format
+    if (window.SUPABASE_URL) {
+      const urlValid = window.SUPABASE_URL.startsWith('https://') && window.SUPABASE_URL.includes('supabase.co');
+      addTest(
+        'Supabase URL format',
+        urlValid ? 'pass' : 'fail',
+        `URL: ${window.SUPABASE_URL}
+Valid format: ${urlValid}`
+      );
+    }
+
+    // Test 3: Try to create Supabase client
+    let supabase;
+    try {
+      supabase = createClient(window.SUPABASE_URL, window.SUPABASE_ANON_KEY);
+      addTest(
+        'Supabase client created',
+        'pass',
+        'Client created successfully'
+      );
+    } catch (error) {
+      addTest(
+        'Supabase client created',
+        'fail',
+        `Error: ${error.message}`
+      );
+    }
+
+    // Test 4: Try to check session
+    if (supabase) {
+      try {
+        const { data, error } = await supabase.auth.getSession();
+        addTest(
+          'Auth API reachable',
+          error ? 'fail' : 'pass',
+          error ? `Error: ${error.message}` : `Session: ${data.session ? 'Active session found' : 'No active session'}`
+        );
+      } catch (error) {
+        addTest(
+          'Auth API reachable',
+          'fail',
+          `Error: ${error.message}`
+        );
+      }
+    }
+
+    // Test 5: Check browser info
+    addTest(
+      'Browser info',
+      'pass',
+      `User Agent: ${navigator.userAgent}
+URL: ${window.location.href}
+Protocol: ${window.location.protocol}`
+    );
+  </script>
+</body>
+</html>

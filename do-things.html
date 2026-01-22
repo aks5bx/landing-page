@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Do Things</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', sans-serif;
+      background: #e1bee7;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    .header {
+      background: #f5f5f5;
+      padding: 20px 30px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .header-left {
+      display: flex;
+      align-items: center;
+      gap: 30px;
+    }
+
+    .header h1 {
+      color: #333;
+      font-size: 28px;
+    }
+
+    .tabs {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .tabs-row {
+      display: flex;
+      gap: 10px;
+    }
+
+    .tab-btn {
+      padding: 8px 16px;
+      background: transparent;
+      color: #666;
+      border: none;
+      border-radius: 5px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-decoration: none;
+      display: inline-block;
+      flex: 1 1 auto;
+      text-align: center;
+      white-space: nowrap;
+    }
+
+    .tab-btn:hover {
+      background: #e8e8e8;
+    }
+
+    .tab-btn.active {
+      background: #ba68c8;
+      color: white;
+    }
+
+    .user-info {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .user-email {
+      color: #666;
+      font-size: 14px;
+    }
+
+    .btn-secondary {
+      padding: 8px 16px;
+      background: #e8e8e8;
+      color: #333;
+      border: none;
+      border-radius: 5px;
+      font-size: 14px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .btn-secondary:hover {
+      background: #d0d0d0;
+    }
+
+    .content-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+    }
+
+    .left-column {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    .section {
+      background: #f5f5f5;
+      padding: 25px;
+      border-radius: 10px;
+      box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    }
+
+    .section h2 {
+      font-size: 24px;
+      color: #333;
+      margin-bottom: 20px;
+      font-weight: 700;
+      text-align: center;
+    }
+
+    .add-form {
+      display: grid;
+      grid-template-columns: 2fr 1fr 2fr auto;
+      gap: 10px;
+      align-items: end;
+      margin-bottom: 20px;
+    }
+
+    .add-form input {
+      padding: 10px;
+      border: 2px solid #e0e0e0;
+      border-radius: 5px;
+      font-size: 14px;
+      font-family: inherit;
+      box-sizing: border-box;
+      height: 38px;
+      line-height: 1.2;
+    }
+
+    .add-form input[type="date"]::-webkit-calendar-picker-indicator {
+      cursor: pointer;
+    }
+
+    .add-form input:focus {
+      outline: none;
+      border-color: #ba68c8;
+    }
+
+    .btn-add {
+      padding: 10px 20px;
+      background: #ba68c8;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s;
+      white-space: nowrap;
+    }
+
+    .btn-add:hover {
+      background: #ab47bc;
+    }
+
+    .table {
+      width: 100%;
+      border-collapse: collapse;
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .table thead {
+      background: #ba68c8;
+      color: white;
+    }
+
+    .table th {
+      padding: 15px;
+      text-align: left;
+      font-weight: 600;
+    }
+
+    .table th:last-child {
+      text-align: center;
+    }
+
+    .table td {
+      padding: 15px;
+      border-bottom: 1px solid #e0e0e0;
+    }
+
+    .table td:last-child {
+      text-align: center;
+    }
+
+    .table tbody tr:hover {
+      background: #f3e5f5;
+    }
+
+    .actions {
+      display: flex;
+      gap: 8px;
+      justify-content: center;
+    }
+
+    .btn-icon {
+      padding: 4px 6px;
+      background: #e8e8e8;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 12px;
+      transition: background 0.3s;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .btn-icon:hover {
+      background: #d0d0d0;
+    }
+
+    .btn-delete {
+      background: #fee;
+      color: #c33;
+    }
+
+    .btn-delete:hover {
+      background: #fdd;
+    }
+
+    .things-form {
+      display: grid;
+      grid-template-columns: 3fr 3fr auto;
+      gap: 10px;
+      align-items: end;
+      margin-bottom: 20px;
+    }
+
+    .things-form input {
+      padding: 10px;
+      border: 2px solid #e0e0e0;
+      border-radius: 5px;
+      font-size: 14px;
+    }
+
+    .things-form input:focus {
+      outline: none;
+      border-color: #ba68c8;
+    }
+
+    .things-section h2 {
+      margin-bottom: 20px;
+    }
+
+    /* Calendar Styles */
+    .calendar-nav {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding: 10px;
+      background: white;
+      border-radius: 5px;
+    }
+
+    .calendar-nav h3 {
+      font-size: 18px;
+      color: #333;
+      margin: 0;
+    }
+
+    .btn-nav {
+      padding: 8px 16px;
+      background: #ba68c8;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .btn-nav:hover {
+      background: #ab47bc;
+    }
+
+    .calendar {
+      background: white;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .calendar-header {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      background: #ba68c8;
+      color: white;
+    }
+
+    .calendar-header-day {
+      padding: 10px;
+      text-align: center;
+      font-weight: 600;
+      font-size: 14px;
+    }
+
+    .calendar-grid {
+      display: grid;
+      grid-template-columns: repeat(7, 1fr);
+      gap: 1px;
+      background: #e0e0e0;
+    }
+
+    .calendar-day {
+      background: white;
+      min-height: 80px;
+      padding: 8px;
+      position: relative;
+      cursor: pointer;
+      transition: background 0.2s;
+      overflow: hidden;
+    }
+
+    .calendar-day:hover {
+      background: #f3e5f5;
+    }
+
+    .calendar-day.other-month {
+      background: #fafafa;
+      color: #999;
+    }
+
+    .calendar-day.today {
+      background: #f3e5f5;
+    }
+
+    .calendar-day-number {
+      font-size: 14px;
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 4px;
+    }
+
+    .calendar-event {
+      background: #ba68c8;
+      color: white;
+      padding: 2px 6px;
+      border-radius: 3px;
+      font-size: 11px;
+      margin-bottom: 2px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      cursor: pointer;
+      max-width: 100%;
+      display: block;
+    }
+
+    .calendar-event:hover {
+      background: #ab47bc;
+    }
+
+    /* Event Detail Modal */
+    .modal {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal.show {
+      display: flex;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: 10px;
+      padding: 30px;
+      max-width: 500px;
+      width: 90%;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+      position: relative;
+    }
+
+    .modal-close {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      background: transparent;
+      border: none;
+      font-size: 24px;
+      cursor: pointer;
+      color: #999;
+    }
+
+    .modal-close:hover {
+      color: #333;
+    }
+
+    .modal-content h2 {
+      margin-bottom: 20px;
+      color: #333;
+    }
+
+    .modal-detail {
+      margin-bottom: 15px;
+    }
+
+    .modal-detail label {
+      font-weight: 600;
+      color: #666;
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    .modal-detail p {
+      color: #333;
+      font-size: 16px;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 25px;
+    }
+
+    .modal-actions button {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .btn-modal-edit {
+      background: #ba68c8;
+      color: white;
+    }
+
+    .btn-modal-edit:hover {
+      background: #ab47bc;
+    }
+
+    .btn-modal-delete {
+      background: #fee;
+      color: #c33;
+    }
+
+    .btn-modal-delete:hover {
+      background: #fdd;
+    }
+
+    @media (max-width: 1200px) {
+      .content-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .add-form,
+      .things-form {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 768px) {
+      .header {
+        flex-direction: column;
+        gap: 15px;
+      }
+
+      .header-left {
+        flex-direction: column;
+        gap: 15px;
+        align-items: flex-start;
+      }
+
+      .section {
+        padding: 20px;
+      }
+
+      .table {
+        font-size: 14px;
+      }
+
+      .table th,
+      .table td {
+        padding: 10px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="header">
+      <div class="header-left">
+        <h1>Life Manager</h1>
+        <div class="tabs">
+          <div class="tabs-row">
+            <a href="landing.html" class="tab-btn">Landing Page</a>
+            <a href="morning-routine.html" class="tab-btn">Morning Routine</a>
+            <a href="index.html" class="tab-btn">Tasks</a>
+            <a href="long-term-tasks.html" class="tab-btn">Long Term Tasks</a>
+          </div>
+          <div class="tabs-row">
+            <a href="reading.html" class="tab-btn">Reading</a>
+            <a href="interests.html" class="tab-btn">Interests</a>
+            <a href="do-things.html" class="tab-btn active">Do Things</a>
+            <a href="idea-store.html" class="tab-btn">Idea Store</a>
+          </div>
+        </div>
+      </div>
+      <div class="user-info">
+        <span class="user-email" id="user-email">Loading...</span>
+        <button class="btn-secondary" id="sign-out-btn">Sign Out</button>
+      </div>
+    </div>
+
+    <div class="content-grid">
+      <div class="left-column">
+        <!-- Host Ideas Section -->
+        <div class="section">
+          <h2>Host Ideas</h2>
+          <form id="host-ideas-form" class="add-form">
+            <input type="text" id="host-idea-input" placeholder="Idea" required>
+            <input type="text" id="host-timeframe-input" placeholder="Timeframe" required>
+            <input type="text" id="host-notes-input" placeholder="Notes (optional)">
+            <button type="submit" class="btn-add">Add</button>
+          </form>
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Idea</th>
+                <th>Timeframe</th>
+                <th>Notes</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="host-ideas-list">
+              <!-- Host ideas will be loaded here -->
+            </tbody>
+          </table>
+        </div>
+
+        <!-- Events Section -->
+        <div class="section">
+          <h2>Events</h2>
+          <form id="events-form" class="add-form">
+            <input type="text" id="event-input" placeholder="Event" required>
+            <input type="date" id="event-date-input" required>
+            <input type="text" id="event-notes-input" placeholder="Notes (optional)">
+            <button type="submit" class="btn-add">Add</button>
+          </form>
+
+          <!-- Calendar Navigation -->
+          <div class="calendar-nav">
+            <button class="btn-nav" id="prev-month">←</button>
+            <h3 id="calendar-month-year"></h3>
+            <button class="btn-nav" id="next-month">→</button>
+          </div>
+
+          <!-- Calendar Grid -->
+          <div class="calendar" id="calendar">
+            <!-- Calendar will be rendered here -->
+          </div>
+        </div>
+      </div>
+
+      <!-- Things to Do Section -->
+      <div class="section things-section">
+        <h2>Things to Do</h2>
+        <form id="things-form" class="things-form">
+          <input type="text" id="thing-input" placeholder="Thing" required>
+          <input type="text" id="thing-notes-input" placeholder="Notes (optional)">
+          <button type="submit" class="btn-add">Add</button>
+        </form>
+        <table class="table">
+          <thead>
+            <tr>
+              <th>Thing</th>
+              <th>Notes</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="things-list">
+            <!-- Things will be loaded here -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- Event Detail Modal -->
+  <div id="event-modal" class="modal">
+    <div class="modal-content">
+      <button class="modal-close" id="modal-close">×</button>
+      <h2 id="modal-event-title"></h2>
+      <div class="modal-detail">
+        <label>Date:</label>
+        <p id="modal-event-date"></p>
+      </div>
+      <div class="modal-detail">
+        <label>Notes:</label>
+        <p id="modal-event-notes"></p>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-modal-edit" id="modal-edit-btn">Edit</button>
+        <button class="btn-modal-delete" id="modal-delete-btn">Delete</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="./config.js"></script>
+  <script type="module" src="./src/do-things.js"></script>
+</body>
+</html>
