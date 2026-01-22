@@ -23,11 +23,11 @@ jobs:
           # Copy all files except .git and node_modules
           rsync -av --exclude='.git' --exclude='node_modules' --exclude='_site' --exclude='supabase' . _site/
 
-      - name: Create config.js from variables
+      - name: Create config.js from secrets
         run: |
           echo "Creating config.js..."
-          echo "window.SUPABASE_URL = '${{ vars.SUPABASE_URL }}';" > _site/config.js
-          echo "window.SUPABASE_ANON_KEY = '${{ vars.SUPABASE_ANON_KEY }}';" >> _site/config.js
+          echo "window.SUPABASE_URL = '${{ secrets.SUPABASE_URL }}';" > _site/config.js
+          echo "window.SUPABASE_ANON_KEY = '${{ secrets.SUPABASE_ANON_KEY }}';" >> _site/config.js
           echo "Config.js created successfully (credentials hidden for security)"
 
       - name: Setup Pages
