@@ -20,8 +20,23 @@ const signOutBtn = document.getElementById('sign-out-btn');
 const leftColumn = document.getElementById('left-column');
 const habitsList = document.getElementById('habits-list');
 
+// Edit section modal elements
+const editSectionModal = document.getElementById('edit-section-modal');
+const editSectionForm = document.getElementById('edit-section-form');
+const editSectionTitleInput = document.getElementById('edit-section-title');
+const editSectionItemsTextarea = document.getElementById('edit-section-items');
+const editSectionCancel = document.getElementById('edit-section-cancel');
+
+// Edit habit modal elements
+const editHabitModal = document.getElementById('edit-habit-modal');
+const editHabitForm = document.getElementById('edit-habit-form');
+const editHabitTextInput = document.getElementById('edit-habit-text');
+const editHabitCancel = document.getElementById('edit-habit-cancel');
+
 let currentUser = null;
 let currentContent = null;
+let currentEditSectionIndex = null;
+let currentEditHabitIndex = null;
 
 // Initialize
 async function init() {
@@ -128,35 +143,101 @@ function renderLandingPage(content) {
   }
 }
 
-// Edit section
-window.editSection = async (index) => {
+// Edit section - open modal
+window.editSection = (index) => {
   const leftSections = currentContent.sections.filter(s => s.title !== 'Habits');
   const section = leftSections[index];
 
-  const newTitle = prompt('Enter section title:', section.title);
-  if (newTitle === null) return;
+  // Store current edit index
+  currentEditSectionIndex = index;
 
-  const newItems = prompt('Enter items (comma separated):', section.items.join(', '));
-  if (newItems === null) return;
+  // Populate modal fields
+  editSectionTitleInput.value = section.title;
+  editSectionItemsTextarea.value = section.items.join('\n');
+
+  // Show modal
+  editSectionModal.classList.add('show');
+};
+
+// Close section modal
+editSectionCancel.addEventListener('click', () => {
+  editSectionModal.classList.remove('show');
+  currentEditSectionIndex = null;
+});
+
+// Close section modal on overlay click
+editSectionModal.addEventListener('click', (e) => {
+  if (e.target === editSectionModal) {
+    editSectionModal.classList.remove('show');
+    currentEditSectionIndex = null;
+  }
+});
+
+// Handle section edit form submission
+editSectionForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  if (currentEditSectionIndex === null) return;
+
+  const leftSections = currentContent.sections.filter(s => s.title !== 'Habits');
+  const section = leftSections[currentEditSectionIndex];
 
   const realIndex = currentContent.sections.findIndex(s => s.title === section.title);
   currentContent.sections[realIndex] = {
-    title: newTitle,
-    items: newItems.split(',').map(item => item.trim())
+    title: editSectionTitleInput.value.trim(),
+    items: editSectionItemsTextarea.value.split('\n').map(item => item.trim()).filter(item => item)
   };
 
-  await saveContent();
-};
+  // Close modal
+  editSectionModal.classList.remove('show');
+  currentEditSectionIndex = null;
 
-// Edit habit
-window.editHabit = async (index) => {
+  await saveContent();
+});
+
+// Edit habit - open modal
+window.editHabit = (index) => {
   const habitsSection = currentContent.sections.find(s => s.title === 'Habits');
-  const newHabit = prompt('Enter habit:', habitsSection.items[index]);
-  if (newHabit === null) return;
 
-  habitsSection.items[index] = newHabit;
-  await saveContent();
+  // Store current edit index
+  currentEditHabitIndex = index;
+
+  // Populate modal field
+  editHabitTextInput.value = habitsSection.items[index];
+
+  // Show modal
+  editHabitModal.classList.add('show');
 };
+
+// Close habit modal
+editHabitCancel.addEventListener('click', () => {
+  editHabitModal.classList.remove('show');
+  currentEditHabitIndex = null;
+});
+
+// Close habit modal on overlay click
+editHabitModal.addEventListener('click', (e) => {
+  if (e.target === editHabitModal) {
+    editHabitModal.classList.remove('show');
+    currentEditHabitIndex = null;
+  }
+});
+
+// Handle habit edit form submission
+editHabitForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  if (currentEditHabitIndex === null) return;
+
+  const habitsSection = currentContent.sections.find(s => s.title === 'Habits');
+  habitsSection.items[currentEditHabitIndex] = editHabitTextInput.value.trim();
+
+  // Close modal
+  editHabitModal.classList.remove('show');
+  currentEditHabitIndex = null;
+
+  await saveContent();
+});
 
 // Save content
 async function saveContent() {
@@ -188,7 +269,7 @@ function escapeHtml(text) {
 // Sign out
 signOutBtn.addEventListener('click', async () => {
   await supabase.auth.signOut();
-  window.location.href = '/index.html';
+  window.location.href = 'index.html';
 });
 
 // Initialize the app

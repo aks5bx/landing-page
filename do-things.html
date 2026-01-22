@@ -272,6 +272,52 @@
       margin-bottom: 20px;
     }
 
+    /* View Toggle Styles */
+    .view-toggle {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      justify-content: center;
+    }
+
+    .view-toggle-btn {
+      padding: 8px 20px;
+      background: #e8e8e8;
+      color: #666;
+      border: none;
+      border-radius: 5px;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .view-toggle-btn:hover {
+      background: #d0d0d0;
+    }
+
+    .view-toggle-btn.active {
+      background: #ba68c8;
+      color: white;
+    }
+
+    /* Events List View Styles */
+    .events-list-container {
+      display: none;
+    }
+
+    .events-list-container.show {
+      display: block;
+    }
+
+    .calendar-container {
+      display: block;
+    }
+
+    .calendar-container.hidden {
+      display: none;
+    }
+
     /* Calendar Styles */
     .calendar-nav {
       display: flex;
@@ -479,6 +525,100 @@
       background: #fdd;
     }
 
+    /* Edit Modal Overlay */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-overlay.show {
+      display: flex;
+    }
+
+    .edit-modal {
+      background: white;
+      border-radius: 10px;
+      padding: 30px;
+      max-width: 500px;
+      width: 90%;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .edit-modal h2 {
+      margin-bottom: 20px;
+      color: #333;
+      font-size: 24px;
+    }
+
+    .edit-modal-form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .edit-modal-form label {
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 5px;
+      display: block;
+    }
+
+    .edit-modal-form input {
+      width: 100%;
+      padding: 10px;
+      border: 2px solid #e0e0e0;
+      border-radius: 5px;
+      font-size: 14px;
+    }
+
+    .edit-modal-form input:focus {
+      outline: none;
+      border-color: #ba68c8;
+    }
+
+    .edit-modal-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .edit-modal-actions button {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      border-radius: 5px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .btn-cancel {
+      background: #e8e8e8;
+      color: #333;
+    }
+
+    .btn-cancel:hover {
+      background: #d0d0d0;
+    }
+
+    .btn-save {
+      background: #ba68c8;
+      color: white;
+    }
+
+    .btn-save:hover {
+      background: #ab47bc;
+    }
+
     @media (max-width: 1200px) {
       .content-grid {
         grid-template-columns: 1fr;
@@ -569,9 +709,16 @@
           </table>
         </div>
 
-        <!-- Events Section -->
+        <!-- Events Store Section -->
         <div class="section">
-          <h2>Events</h2>
+          <h2>Events Store</h2>
+
+          <!-- View Toggle -->
+          <div class="view-toggle">
+            <button class="view-toggle-btn active" id="calendar-view-btn">Calendar View</button>
+            <button class="view-toggle-btn" id="list-view-btn">List View</button>
+          </div>
+
           <form id="events-form" class="add-form">
             <input type="text" id="event-input" placeholder="Event" required>
             <input type="date" id="event-date-input" required>
@@ -579,16 +726,36 @@
             <button type="submit" class="btn-add">Add</button>
           </form>
 
-          <!-- Calendar Navigation -->
-          <div class="calendar-nav">
-            <button class="btn-nav" id="prev-month">←</button>
-            <h3 id="calendar-month-year"></h3>
-            <button class="btn-nav" id="next-month">→</button>
+          <!-- Calendar View Container -->
+          <div class="calendar-container" id="calendar-container">
+            <!-- Calendar Navigation -->
+            <div class="calendar-nav">
+              <button class="btn-nav" id="prev-month">←</button>
+              <h3 id="calendar-month-year"></h3>
+              <button class="btn-nav" id="next-month">→</button>
+            </div>
+
+            <!-- Calendar Grid -->
+            <div class="calendar" id="calendar">
+              <!-- Calendar will be rendered here -->
+            </div>
           </div>
 
-          <!-- Calendar Grid -->
-          <div class="calendar" id="calendar">
-            <!-- Calendar will be rendered here -->
+          <!-- List View Container -->
+          <div class="events-list-container" id="events-list-container">
+            <table class="table">
+              <thead>
+                <tr>
+                  <th>Event</th>
+                  <th>Date</th>
+                  <th>Notes</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="events-list">
+                <!-- Events list will be loaded here -->
+              </tbody>
+            </table>
           </div>
         </div>
       </div>
@@ -634,6 +801,85 @@
         <button class="btn-modal-edit" id="modal-edit-btn">Edit</button>
         <button class="btn-modal-delete" id="modal-delete-btn">Delete</button>
       </div>
+    </div>
+  </div>
+
+  <!-- Edit Event Modal -->
+  <div id="edit-event-modal" class="modal-overlay">
+    <div class="edit-modal">
+      <h2>Edit Event</h2>
+      <form id="edit-event-form" class="edit-modal-form">
+        <div>
+          <label for="edit-event-name">Event</label>
+          <input type="text" id="edit-event-name" required>
+        </div>
+
+        <div>
+          <label for="edit-event-date">Date</label>
+          <input type="date" id="edit-event-date" required>
+        </div>
+
+        <div>
+          <label for="edit-event-notes">Notes</label>
+          <input type="text" id="edit-event-notes" placeholder="Optional">
+        </div>
+
+        <div class="edit-modal-actions">
+          <button type="button" class="btn-cancel" id="edit-event-cancel">Cancel</button>
+          <button type="submit" class="btn-save">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Edit Host Idea Modal -->
+  <div id="edit-host-idea-modal" class="modal-overlay">
+    <div class="edit-modal">
+      <h2>Edit Host Idea</h2>
+      <form id="edit-host-idea-form" class="edit-modal-form">
+        <div>
+          <label for="edit-host-idea">Idea</label>
+          <input type="text" id="edit-host-idea" required>
+        </div>
+
+        <div>
+          <label for="edit-host-timeframe">Timeframe</label>
+          <input type="text" id="edit-host-timeframe" required>
+        </div>
+
+        <div>
+          <label for="edit-host-notes">Notes</label>
+          <input type="text" id="edit-host-notes" placeholder="Optional">
+        </div>
+
+        <div class="edit-modal-actions">
+          <button type="button" class="btn-cancel" id="edit-host-idea-cancel">Cancel</button>
+          <button type="submit" class="btn-save">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Edit Thing Modal -->
+  <div id="edit-thing-modal" class="modal-overlay">
+    <div class="edit-modal">
+      <h2>Edit Thing</h2>
+      <form id="edit-thing-form" class="edit-modal-form">
+        <div>
+          <label for="edit-thing-name">Thing</label>
+          <input type="text" id="edit-thing-name" required>
+        </div>
+
+        <div>
+          <label for="edit-thing-notes">Notes</label>
+          <input type="text" id="edit-thing-notes" placeholder="Optional">
+        </div>
+
+        <div class="edit-modal-actions">
+          <button type="button" class="btn-cancel" id="edit-thing-cancel">Cancel</button>
+          <button type="submit" class="btn-save">Save Changes</button>
+        </div>
+      </form>
     </div>
   </div>
 

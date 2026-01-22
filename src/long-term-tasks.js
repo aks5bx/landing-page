@@ -20,8 +20,18 @@ const signOutBtn = document.getElementById('sign-out-btn');
 const tasksList = document.getElementById('tasks-list');
 const taskForm = document.getElementById('task-form');
 
+// Edit modal elements
+const editModal = document.getElementById('edit-modal');
+const editForm = document.getElementById('edit-form');
+const editItemInput = document.getElementById('edit-item');
+const editPrioritySelect = document.getElementById('edit-priority');
+const editEffortSelect = document.getElementById('edit-effort');
+const editStatusSelect = document.getElementById('edit-status');
+const editCancel = document.getElementById('edit-cancel');
+
 let currentUser = null;
 let currentTasks = [];
+let currentEditIndex = null;
 
 // Initialize app
 async function init() {
@@ -182,26 +192,48 @@ taskForm.addEventListener('submit', async (e) => {
   }
 });
 
-// Edit task
-window.editTask = async (index) => {
+// Edit task - open modal
+window.editTask = (index) => {
   const task = currentTasks[index];
-  const newItem = prompt('Enter new task name:', task.item);
-  if (newItem === null) return;
 
-  const newPriority = prompt('Enter priority (Low, Medium, High):', task.priority);
-  if (newPriority === null) return;
+  // Store current edit index
+  currentEditIndex = index;
 
-  const newEffort = prompt('Enter effort (Low, Medium, High):', task.effort);
-  if (newEffort === null) return;
+  // Populate modal fields
+  editItemInput.value = task.item;
+  editPrioritySelect.value = task.priority;
+  editEffortSelect.value = task.effort;
+  editStatusSelect.value = task.status;
 
-  const newStatus = prompt('Enter status (TBD, To Do):', task.status);
-  if (newStatus === null) return;
+  // Show modal
+  editModal.classList.add('show');
+};
 
-  currentTasks[index] = {
-    item: newItem,
-    priority: newPriority,
-    effort: newEffort,
-    status: newStatus
+// Close modal
+editCancel.addEventListener('click', () => {
+  editModal.classList.remove('show');
+  currentEditIndex = null;
+});
+
+// Close modal on overlay click
+editModal.addEventListener('click', (e) => {
+  if (e.target === editModal) {
+    editModal.classList.remove('show');
+    currentEditIndex = null;
+  }
+});
+
+// Handle edit form submission
+editForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  if (currentEditIndex === null) return;
+
+  currentTasks[currentEditIndex] = {
+    item: editItemInput.value.trim(),
+    priority: editPrioritySelect.value,
+    effort: editEffortSelect.value,
+    status: editStatusSelect.value
   };
 
   try {
@@ -215,12 +247,16 @@ window.editTask = async (index) => {
 
     if (error) throw error;
 
+    // Close modal
+    editModal.classList.remove('show');
+    currentEditIndex = null;
+
     await loadLongTermTasks();
   } catch (error) {
     console.error('Error updating task:', error);
     alert('Failed to update task: ' + error.message);
   }
-};
+});
 
 // Delete task
 window.deleteTask = async (index) => {

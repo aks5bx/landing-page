@@ -250,6 +250,108 @@
         font-size: 16px;
       }
     }
+
+    /* Edit Modal */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-overlay.show {
+      display: flex;
+    }
+
+    .modal {
+      background: white;
+      border-radius: 10px;
+      padding: 30px;
+      max-width: 500px;
+      width: 90%;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .modal h2 {
+      margin-bottom: 20px;
+      color: #333;
+      font-size: 24px;
+    }
+
+    .modal-form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .modal-form label {
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 5px;
+      display: block;
+    }
+
+    .modal-form input,
+    .modal-form textarea {
+      width: 100%;
+      padding: 10px;
+      border: 2px solid #e0e0e0;
+      border-radius: 5px;
+      font-size: 14px;
+      font-family: inherit;
+    }
+
+    .modal-form textarea {
+      resize: vertical;
+      min-height: 100px;
+    }
+
+    .modal-form input:focus,
+    .modal-form textarea:focus {
+      outline: none;
+      border-color: #2196f3;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .modal-actions button {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      border-radius: 5px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .btn-cancel {
+      background: #e8e8e8;
+      color: #333;
+    }
+
+    .btn-cancel:hover {
+      background: #d0d0d0;
+    }
+
+    .btn-save {
+      background: #2196f3;
+      color: white;
+    }
+
+    .btn-save:hover {
+      background: #1976d2;
+    }
   </style>
 </head>
 <body>
@@ -289,6 +391,47 @@
           <!-- Habits will be loaded here -->
         </div>
       </div>
+    </div>
+  </div>
+
+  <!-- Edit Section Modal -->
+  <div id="edit-section-modal" class="modal-overlay">
+    <div class="modal">
+      <h2>Edit Section</h2>
+      <form id="edit-section-form" class="modal-form">
+        <div>
+          <label for="edit-section-title">Section Title</label>
+          <input type="text" id="edit-section-title" required>
+        </div>
+
+        <div>
+          <label for="edit-section-items">Items (one per line)</label>
+          <textarea id="edit-section-items" required placeholder="Enter each item on a new line"></textarea>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-cancel" id="edit-section-cancel">Cancel</button>
+          <button type="submit" class="btn-save">Save Changes</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Edit Habit Modal -->
+  <div id="edit-habit-modal" class="modal-overlay">
+    <div class="modal">
+      <h2>Edit Habit</h2>
+      <form id="edit-habit-form" class="modal-form">
+        <div>
+          <label for="edit-habit-text">Habit</label>
+          <input type="text" id="edit-habit-text" required>
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-cancel" id="edit-habit-cancel">Cancel</button>
+          <button type="submit" class="btn-save">Save Changes</button>
+        </div>
+      </form>
     </div>
   </div>
 

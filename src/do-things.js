@@ -25,6 +25,7 @@ let eventsForm, eventInput, eventDateInput, eventNotesInput;
 let calendar, prevMonthBtn, nextMonthBtn, calendarMonthYear;
 let eventModal, modalClose, modalEventTitle, modalEventDate, modalEventNotes;
 let modalEditBtn, modalDeleteBtn;
+let calendarViewBtn, listViewBtn, calendarContainer, eventsListContainer, eventsList;
 
 let currentMonth = new Date().getMonth();
 let currentYear = new Date().getFullYear();
@@ -34,7 +35,15 @@ let selectedEvent = null;
 // Things to Do - initialized after DOM loads
 let thingsForm, thingInput, thingNotesInput, thingsList;
 
+// Edit modals - initialized after DOM loads
+let editEventModal, editEventForm, editEventNameInput, editEventDateInput, editEventNotesInput, editEventCancel;
+let editHostIdeaModal, editHostIdeaForm, editHostIdeaInput, editHostTimeframeInput, editHostNotesInputModal, editHostIdeaCancel;
+let editThingModal, editThingForm, editThingNameInput, editThingNotesInputModal, editThingCancel;
+
 let currentUser = null;
+let currentEditEventId = null;
+let currentEditHostIdeaId = null;
+let currentEditThingId = null;
 
 // Initialize all DOM elements
 function initDOMElements() {
@@ -65,12 +74,40 @@ function initDOMElements() {
   modalEventNotes = document.getElementById('modal-event-notes');
   modalEditBtn = document.getElementById('modal-edit-btn');
   modalDeleteBtn = document.getElementById('modal-delete-btn');
+  calendarViewBtn = document.getElementById('calendar-view-btn');
+  listViewBtn = document.getElementById('list-view-btn');
+  calendarContainer = document.getElementById('calendar-container');
+  eventsListContainer = document.getElementById('events-list-container');
+  eventsList = document.getElementById('events-list');
 
   // Things to Do
   thingsForm = document.getElementById('things-form');
   thingInput = document.getElementById('thing-input');
   thingNotesInput = document.getElementById('thing-notes-input');
   thingsList = document.getElementById('things-list');
+
+  // Edit Event Modal
+  editEventModal = document.getElementById('edit-event-modal');
+  editEventForm = document.getElementById('edit-event-form');
+  editEventNameInput = document.getElementById('edit-event-name');
+  editEventDateInput = document.getElementById('edit-event-date');
+  editEventNotesInput = document.getElementById('edit-event-notes');
+  editEventCancel = document.getElementById('edit-event-cancel');
+
+  // Edit Host Idea Modal
+  editHostIdeaModal = document.getElementById('edit-host-idea-modal');
+  editHostIdeaForm = document.getElementById('edit-host-idea-form');
+  editHostIdeaInput = document.getElementById('edit-host-idea');
+  editHostTimeframeInput = document.getElementById('edit-host-timeframe');
+  editHostNotesInputModal = document.getElementById('edit-host-notes');
+  editHostIdeaCancel = document.getElementById('edit-host-idea-cancel');
+
+  // Edit Thing Modal
+  editThingModal = document.getElementById('edit-thing-modal');
+  editThingForm = document.getElementById('edit-thing-form');
+  editThingNameInput = document.getElementById('edit-thing-name');
+  editThingNotesInputModal = document.getElementById('edit-thing-notes');
+  editThingCancel = document.getElementById('edit-thing-cancel');
 
   // Setup all event listeners after DOM elements are ready
   setupEventListeners();
@@ -86,6 +123,22 @@ function setupEventListeners() {
   // Sign out button
   signOutBtn.addEventListener('click', async () => {
     await supabase.auth.signOut();
+  });
+
+  // View toggle buttons
+  calendarViewBtn.addEventListener('click', () => {
+    calendarViewBtn.classList.add('active');
+    listViewBtn.classList.remove('active');
+    calendarContainer.classList.remove('hidden');
+    eventsListContainer.classList.remove('show');
+  });
+
+  listViewBtn.addEventListener('click', () => {
+    listViewBtn.classList.add('active');
+    calendarViewBtn.classList.remove('active');
+    eventsListContainer.classList.add('show');
+    calendarContainer.classList.add('hidden');
+    renderEventsList();
   });
 
   // Calendar navigation
@@ -120,38 +173,137 @@ function setupEventListeners() {
     }
   });
 
-  // Modal edit button
-  modalEditBtn.addEventListener('click', async () => {
+  // Modal edit button - opens edit modal
+  modalEditBtn.addEventListener('click', () => {
     if (!selectedEvent) return;
 
-    const newEvent = prompt('Enter event:', selectedEvent.event);
-    if (newEvent === null) return;
+    // Store current edit ID
+    currentEditEventId = selectedEvent.id;
 
-    const newDate = prompt('Enter date (YYYY-MM-DD):', selectedEvent.date);
-    if (newDate === null) return;
+    // Populate modal fields
+    editEventNameInput.value = selectedEvent.event;
+    editEventDateInput.value = selectedEvent.date;
+    editEventNotesInput.value = selectedEvent.notes || '';
 
-    const newNotes = prompt('Enter notes:', selectedEvent.notes || '');
-    if (newNotes === null) return;
+    // Close detail modal and open edit modal
+    eventModal.classList.remove('show');
+    editEventModal.classList.add('show');
+  });
+
+  // Edit Event Modal handlers
+  editEventCancel.addEventListener('click', () => {
+    editEventModal.classList.remove('show');
+    currentEditEventId = null;
+  });
+
+  editEventModal.addEventListener('click', (e) => {
+    if (e.target === editEventModal) {
+      editEventModal.classList.remove('show');
+      currentEditEventId = null;
+    }
+  });
+
+  editEventForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!currentEditEventId) return;
 
     try {
       const { error } = await supabase
         .from('events')
         .update({
-          event: newEvent,
-          date: newDate,
-          notes: newNotes,
+          event: editEventNameInput.value.trim(),
+          date: editEventDateInput.value,
+          notes: editEventNotesInput.value.trim(),
           updated_at: new Date().toISOString()
         })
-        .eq('id', selectedEvent.id);
+        .eq('id', currentEditEventId);
 
       if (error) throw error;
 
-      eventModal.classList.remove('show');
+      editEventModal.classList.remove('show');
+      currentEditEventId = null;
       selectedEvent = null;
       await loadEvents();
     } catch (error) {
       console.error('Error updating event:', error);
       alert('Failed to update event: ' + error.message);
+    }
+  });
+
+  // Edit Host Idea Modal handlers
+  editHostIdeaCancel.addEventListener('click', () => {
+    editHostIdeaModal.classList.remove('show');
+    currentEditHostIdeaId = null;
+  });
+
+  editHostIdeaModal.addEventListener('click', (e) => {
+    if (e.target === editHostIdeaModal) {
+      editHostIdeaModal.classList.remove('show');
+      currentEditHostIdeaId = null;
+    }
+  });
+
+  editHostIdeaForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!currentEditHostIdeaId) return;
+
+    try {
+      const { error } = await supabase
+        .from('host_ideas')
+        .update({
+          idea: editHostIdeaInput.value.trim(),
+          timeframe: editHostTimeframeInput.value.trim(),
+          notes: editHostNotesInputModal.value.trim(),
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', currentEditHostIdeaId);
+
+      if (error) throw error;
+
+      editHostIdeaModal.classList.remove('show');
+      currentEditHostIdeaId = null;
+      await loadHostIdeas();
+    } catch (error) {
+      console.error('Error updating host idea:', error);
+      alert('Failed to update host idea: ' + error.message);
+    }
+  });
+
+  // Edit Thing Modal handlers
+  editThingCancel.addEventListener('click', () => {
+    editThingModal.classList.remove('show');
+    currentEditThingId = null;
+  });
+
+  editThingModal.addEventListener('click', (e) => {
+    if (e.target === editThingModal) {
+      editThingModal.classList.remove('show');
+      currentEditThingId = null;
+    }
+  });
+
+  editThingForm.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    if (!currentEditThingId) return;
+
+    try {
+      const { error } = await supabase
+        .from('things_to_do')
+        .update({
+          thing: editThingNameInput.value.trim(),
+          notes: editThingNotesInputModal.value.trim(),
+          updated_at: new Date().toISOString()
+        })
+        .eq('id', currentEditThingId);
+
+      if (error) throw error;
+
+      editThingModal.classList.remove('show');
+      currentEditThingId = null;
+      await loadThings();
+    } catch (error) {
+      console.error('Error updating thing:', error);
+      alert('Failed to update thing: ' + error.message);
     }
   });
 
@@ -375,32 +527,16 @@ window.editHostIdea = async (id) => {
     return;
   }
 
-  const newIdea = prompt('Enter idea:', hostIdea.idea);
-  if (newIdea === null) return;
+  // Store current edit ID
+  currentEditHostIdeaId = id;
 
-  const newTimeframe = prompt('Enter timeframe:', hostIdea.timeframe);
-  if (newTimeframe === null) return;
+  // Populate modal fields
+  editHostIdeaInput.value = hostIdea.idea;
+  editHostTimeframeInput.value = hostIdea.timeframe;
+  editHostNotesInputModal.value = hostIdea.notes || '';
 
-  const newNotes = prompt('Enter notes:', hostIdea.notes || '');
-  if (newNotes === null) return;
-
-  try {
-    const { error: updateError } = await supabase
-      .from('host_ideas')
-      .update({
-        idea: newIdea,
-        timeframe: newTimeframe,
-        notes: newNotes,
-        updated_at: new Date().toISOString()
-      })
-      .eq('id', id);
-
-    if (updateError) throw updateError;
-    await loadHostIdeas();
-  } catch (error) {
-    console.error('Error updating host idea:', error);
-    alert('Failed to update host idea: ' + error.message);
-  }
+  // Show modal
+  editHostIdeaModal.classList.add('show');
 };
 
 window.deleteHostIdea = async (id) => {
@@ -433,10 +569,17 @@ async function loadEvents() {
     if (error) throw error;
     allEvents = data || [];
     renderCalendar();
+    // Also update list view if it's visible
+    if (eventsListContainer && eventsListContainer.classList.contains('show')) {
+      renderEventsList();
+    }
   } catch (error) {
     console.error('Error loading events:', error);
     allEvents = [];
     renderCalendar();
+    if (eventsListContainer && eventsListContainer.classList.contains('show')) {
+      renderEventsList();
+    }
   }
 }
 
@@ -526,6 +669,81 @@ window.showEventModal = (eventId) => {
   eventModal.classList.add('show');
 };
 
+// Render events list view
+function renderEventsList() {
+  if (allEvents.length === 0) {
+    eventsList.innerHTML = `
+      <tr>
+        <td colspan="4" style="text-align: center; padding: 40px; color: #999;">
+          No events added yet
+        </td>
+      </tr>
+    `;
+    return;
+  }
+
+  // Sort events by date
+  const sortedEvents = [...allEvents].sort((a, b) => new Date(a.date) - new Date(b.date));
+
+  eventsList.innerHTML = sortedEvents.map(event => {
+    const formattedDate = new Date(event.date + 'T00:00:00').toLocaleDateString('en-US', {
+      weekday: 'short',
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
+    });
+    return `
+      <tr>
+        <td>${escapeHtml(event.event)}</td>
+        <td>${formattedDate}</td>
+        <td>${escapeHtml(event.notes || '')}</td>
+        <td>
+          <div class="actions">
+            <button class="btn-icon" onclick="editEventFromList('${event.id}')" title="Edit">✏️</button>
+            <button class="btn-icon btn-delete" onclick="deleteEventFromList('${event.id}')" title="Delete">🗑️</button>
+          </div>
+        </td>
+      </tr>
+    `;
+  }).join('');
+}
+
+// Edit event from list view
+window.editEventFromList = async (id) => {
+  const event = allEvents.find(e => e.id === id);
+  if (!event) return;
+
+  // Store current edit ID
+  currentEditEventId = id;
+
+  // Populate modal fields
+  editEventNameInput.value = event.event;
+  editEventDateInput.value = event.date;
+  editEventNotesInput.value = event.notes || '';
+
+  // Show edit modal
+  editEventModal.classList.add('show');
+};
+
+// Delete event from list view
+window.deleteEventFromList = async (id) => {
+  if (!confirm('Are you sure you want to delete this event?')) return;
+
+  try {
+    const { error } = await supabase
+      .from('events')
+      .delete()
+      .eq('id', id);
+
+    if (error) throw error;
+    await loadEvents();
+    renderEventsList();
+  } catch (error) {
+    console.error('Error deleting event:', error);
+    alert('Failed to delete event: ' + error.message);
+  }
+};
+
 // ==================== THINGS TO DO ====================
 
 async function loadThings() {
@@ -582,28 +800,15 @@ window.editThing = async (id) => {
     return;
   }
 
-  const newThing = prompt('Enter thing:', thing.thing);
-  if (newThing === null) return;
+  // Store current edit ID
+  currentEditThingId = id;
 
-  const newNotes = prompt('Enter notes:', thing.notes || '');
-  if (newNotes === null) return;
+  // Populate modal fields
+  editThingNameInput.value = thing.thing;
+  editThingNotesInputModal.value = thing.notes || '';
 
-  try {
-    const { error: updateError } = await supabase
-      .from('things_to_do')
-      .update({
-        thing: newThing,
-        notes: newNotes,
-        updated_at: new Date().toISOString()
-      })
-      .eq('id', id);
-
-    if (updateError) throw updateError;
-    await loadThings();
-  } catch (error) {
-    console.error('Error updating thing:', error);
-    alert('Failed to update thing: ' + error.message);
-  }
+  // Show modal
+  editThingModal.classList.add('show');
 };
 
 window.deleteThing = async (id) => {

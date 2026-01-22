@@ -19,7 +19,17 @@ const userEmailSpan = document.getElementById('user-email');
 const signOutBtn = document.getElementById('sign-out-btn');
 const interestsList = document.getElementById('interests-list');
 
+// Edit modal elements
+const editModal = document.getElementById('edit-modal');
+const editForm = document.getElementById('edit-form');
+const editInterestInput = document.getElementById('edit-interest');
+const editQGoalInput = document.getElementById('edit-q-goal');
+const editYearlongGoalInput = document.getElementById('edit-yearlong-goal');
+const editNotesInput = document.getElementById('edit-notes');
+const editCancel = document.getElementById('edit-cancel');
+
 let currentUser = null;
+let currentEditId = null;
 
 // Initialize app
 async function init() {
@@ -110,7 +120,7 @@ function escapeHtml(text) {
   return div.innerHTML;
 }
 
-// Edit interest
+// Edit interest - open modal
 window.editInterest = async (id) => {
   const { data: interest, error } = await supabase
     .from('interests')
@@ -123,17 +133,43 @@ window.editInterest = async (id) => {
     return;
   }
 
-  const newInterest = prompt('Enter interest:', interest.interest);
-  if (newInterest === null) return;
+  // Store current edit ID
+  currentEditId = id;
 
-  const newQGoal = prompt('Enter Q goal:', interest.q_goal || '');
-  if (newQGoal === null) return;
+  // Populate modal fields
+  editInterestInput.value = interest.interest;
+  editQGoalInput.value = interest.q_goal || '';
+  editYearlongGoalInput.value = interest.yearlong_goal || '';
+  editNotesInput.value = interest.notes || '';
 
-  const newYearlongGoal = prompt('Enter yearlong goal:', interest.yearlong_goal || '');
-  if (newYearlongGoal === null) return;
+  // Show modal
+  editModal.classList.add('show');
+};
 
-  const newNotes = prompt('Enter notes:', interest.notes || '');
-  if (newNotes === null) return;
+// Close modal
+editCancel.addEventListener('click', () => {
+  editModal.classList.remove('show');
+  currentEditId = null;
+});
+
+// Close modal on overlay click
+editModal.addEventListener('click', (e) => {
+  if (e.target === editModal) {
+    editModal.classList.remove('show');
+    currentEditId = null;
+  }
+});
+
+// Handle edit form submission
+editForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  if (!currentEditId) return;
+
+  const newInterest = editInterestInput.value.trim();
+  const newQGoal = editQGoalInput.value.trim();
+  const newYearlongGoal = editYearlongGoalInput.value.trim();
+  const newNotes = editNotesInput.value.trim();
 
   try {
     const { error: updateError } = await supabase
@@ -145,16 +181,20 @@ window.editInterest = async (id) => {
         notes: newNotes,
         updated_at: new Date().toISOString()
       })
-      .eq('id', id);
+      .eq('id', currentEditId);
 
     if (updateError) throw updateError;
+
+    // Close modal
+    editModal.classList.remove('show');
+    currentEditId = null;
 
     await loadInterests();
   } catch (error) {
     console.error('Error updating interest:', error);
     alert('Failed to update interest: ' + error.message);
   }
-};
+});
 
 // Delete interest
 window.deleteInterest = async (id) => {

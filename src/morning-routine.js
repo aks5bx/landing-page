@@ -24,8 +24,17 @@ const wfhDayTitle = document.getElementById('wfh-day-title');
 const wfhDaySchedule = document.getElementById('wfh-day-schedule');
 const workoutSchedule = document.getElementById('workout-schedule');
 
+// Edit modal elements
+const editWorkoutModal = document.getElementById('edit-workout-modal');
+const editWorkoutForm = document.getElementById('edit-workout-form');
+const editWorkoutDowSelect = document.getElementById('edit-workout-dow');
+const editWorkoutNameInput = document.getElementById('edit-workout-name');
+const editWorkoutNotesInput = document.getElementById('edit-workout-notes');
+const editWorkoutCancel = document.getElementById('edit-workout-cancel');
+
 let currentUser = null;
 let currentRoutine = null;
+let currentEditWorkoutIndex = null;
 
 // Update current time
 function updateCurrentTime() {
@@ -194,27 +203,54 @@ window.editScheduleItem = async (type, index) => {
   await saveRoutine();
 };
 
-// Edit workout
-window.editWorkout = async (index) => {
+// Edit workout - open modal
+window.editWorkout = (index) => {
   const workout = currentRoutine.workoutSchedule[index];
 
-  const newDow = prompt('Enter day of week:', workout.dow);
-  if (newDow === null) return;
+  // Store current edit index
+  currentEditWorkoutIndex = index;
 
-  const newWorkout = prompt('Enter workout:', workout.workout);
-  if (newWorkout === null) return;
+  // Populate modal fields
+  editWorkoutDowSelect.value = workout.dow;
+  editWorkoutNameInput.value = workout.workout;
+  editWorkoutNotesInput.value = workout.notes || '';
 
-  const newNotes = prompt('Enter notes:', workout.notes);
-  if (newNotes === null) return;
+  // Show modal
+  editWorkoutModal.classList.add('show');
+};
 
-  currentRoutine.workoutSchedule[index] = {
-    dow: newDow,
-    workout: newWorkout,
-    notes: newNotes
+// Close modal
+editWorkoutCancel.addEventListener('click', () => {
+  editWorkoutModal.classList.remove('show');
+  currentEditWorkoutIndex = null;
+});
+
+// Close modal on overlay click
+editWorkoutModal.addEventListener('click', (e) => {
+  if (e.target === editWorkoutModal) {
+    editWorkoutModal.classList.remove('show');
+    currentEditWorkoutIndex = null;
+  }
+});
+
+// Handle edit form submission
+editWorkoutForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  if (currentEditWorkoutIndex === null) return;
+
+  currentRoutine.workoutSchedule[currentEditWorkoutIndex] = {
+    dow: editWorkoutDowSelect.value,
+    workout: editWorkoutNameInput.value.trim(),
+    notes: editWorkoutNotesInput.value.trim()
   };
 
+  // Close modal
+  editWorkoutModal.classList.remove('show');
+  currentEditWorkoutIndex = null;
+
   await saveRoutine();
-};
+});
 
 // Delete workout
 window.deleteWorkout = async (index) => {

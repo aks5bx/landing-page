@@ -25,7 +25,16 @@ const publicationLinkInput = document.getElementById('publication-link');
 const gmailForm = document.getElementById('gmail-form');
 const gmailInput = document.getElementById('gmail-input');
 
+// Edit modal elements
+const editModal = document.getElementById('edit-modal');
+const editForm = document.getElementById('edit-form');
+const editNameInput = document.getElementById('edit-name');
+const editCategoryInput = document.getElementById('edit-category');
+const editLinkInput = document.getElementById('edit-link');
+const editCancel = document.getElementById('edit-cancel');
+
 let currentUser = null;
+let currentEditId = null;
 
 // Initialize app
 async function init() {
@@ -147,14 +156,41 @@ window.editPublication = async (id) => {
     return;
   }
 
-  const newName = prompt('Enter publication name:', publication.name);
-  if (newName === null) return;
+  // Store current edit ID
+  currentEditId = id;
 
-  const newCategory = prompt('Enter category:', publication.category);
-  if (newCategory === null) return;
+  // Populate modal fields
+  editNameInput.value = publication.name;
+  editCategoryInput.value = publication.category;
+  editLinkInput.value = publication.link;
 
-  const newLink = prompt('Enter link (URL):', publication.link);
-  if (newLink === null) return;
+  // Show modal
+  editModal.classList.add('show');
+};
+
+// Close modal
+editCancel.addEventListener('click', () => {
+  editModal.classList.remove('show');
+  currentEditId = null;
+});
+
+// Close modal on overlay click
+editModal.addEventListener('click', (e) => {
+  if (e.target === editModal) {
+    editModal.classList.remove('show');
+    currentEditId = null;
+  }
+});
+
+// Handle edit form submission
+editForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  if (!currentEditId) return;
+
+  const newName = editNameInput.value.trim();
+  const newCategory = editCategoryInput.value.trim();
+  const newLink = editLinkInput.value.trim();
 
   try {
     const { error: updateError } = await supabase
@@ -165,15 +201,20 @@ window.editPublication = async (id) => {
         link: newLink,
         updated_at: new Date().toISOString()
       })
-      .eq('id', id);
+      .eq('id', currentEditId);
 
     if (updateError) throw updateError;
+
+    // Close modal
+    editModal.classList.remove('show');
+    currentEditId = null;
+
     await loadPublications();
   } catch (error) {
     console.error('Error updating publication:', error);
     alert('Failed to update publication: ' + error.message);
   }
-};
+});
 
 window.deletePublication = async (id) => {
   console.log('Delete publication called with id:', id);

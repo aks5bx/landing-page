@@ -22,7 +22,15 @@ const ideaForm = document.getElementById('idea-form');
 const ideaTextInput = document.getElementById('idea-text');
 const ideaNotesInput = document.getElementById('idea-notes');
 
+// Edit modal elements
+const editModal = document.getElementById('edit-modal');
+const editForm = document.getElementById('edit-form');
+const editIdeaInput = document.getElementById('edit-idea');
+const editNotesInput = document.getElementById('edit-notes');
+const editCancel = document.getElementById('edit-cancel');
+
 let currentUser = null;
+let currentEditId = null;
 
 // Initialize app
 async function init() {
@@ -99,7 +107,7 @@ function escapeHtml(text) {
   return div.innerHTML;
 }
 
-// Edit idea
+// Edit idea - open modal
 window.editIdea = async (id) => {
   const { data: idea, error } = await supabase
     .from('idea_store')
@@ -112,11 +120,39 @@ window.editIdea = async (id) => {
     return;
   }
 
-  const newIdea = prompt('Enter idea:', idea.idea);
-  if (newIdea === null) return;
+  // Store current edit ID
+  currentEditId = id;
 
-  const newNotes = prompt('Enter notes:', idea.notes || '');
-  if (newNotes === null) return;
+  // Populate modal fields
+  editIdeaInput.value = idea.idea;
+  editNotesInput.value = idea.notes || '';
+
+  // Show modal
+  editModal.classList.add('show');
+};
+
+// Close modal
+editCancel.addEventListener('click', () => {
+  editModal.classList.remove('show');
+  currentEditId = null;
+});
+
+// Close modal on overlay click
+editModal.addEventListener('click', (e) => {
+  if (e.target === editModal) {
+    editModal.classList.remove('show');
+    currentEditId = null;
+  }
+});
+
+// Handle edit form submission
+editForm.addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  if (!currentEditId) return;
+
+  const newIdea = editIdeaInput.value.trim();
+  const newNotes = editNotesInput.value.trim();
 
   try {
     const { error: updateError } = await supabase
@@ -126,16 +162,20 @@ window.editIdea = async (id) => {
         notes: newNotes,
         updated_at: new Date().toISOString()
       })
-      .eq('id', id);
+      .eq('id', currentEditId);
 
     if (updateError) throw updateError;
+
+    // Close modal
+    editModal.classList.remove('show');
+    currentEditId = null;
 
     await loadIdeas();
   } catch (error) {
     console.error('Error updating idea:', error);
     alert('Failed to update idea: ' + error.message);
   }
-};
+});
 
 // Delete idea
 window.deleteIdea = async (id) => {

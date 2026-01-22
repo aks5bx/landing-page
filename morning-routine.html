@@ -300,6 +300,102 @@
         padding: 8px 10px;
       }
     }
+
+    /* Edit Modal */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 1000;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .modal-overlay.show {
+      display: flex;
+    }
+
+    .modal {
+      background: white;
+      border-radius: 10px;
+      padding: 30px;
+      max-width: 500px;
+      width: 90%;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+    }
+
+    .modal h2 {
+      margin-bottom: 20px;
+      color: #333;
+      font-size: 24px;
+    }
+
+    .modal-form {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .modal-form label {
+      font-weight: 600;
+      color: #333;
+      margin-bottom: 5px;
+      display: block;
+    }
+
+    .modal-form input,
+    .modal-form select {
+      width: 100%;
+      padding: 10px;
+      border: 2px solid #e0e0e0;
+      border-radius: 5px;
+      font-size: 14px;
+    }
+
+    .modal-form input:focus,
+    .modal-form select:focus {
+      outline: none;
+      border-color: #64b5f6;
+    }
+
+    .modal-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .modal-actions button {
+      flex: 1;
+      padding: 12px;
+      border: none;
+      border-radius: 5px;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .btn-cancel {
+      background: #e8e8e8;
+      color: #333;
+    }
+
+    .btn-cancel:hover {
+      background: #d0d0d0;
+    }
+
+    .btn-save {
+      background: #64b5f6;
+      color: white;
+    }
+
+    .btn-save:hover {
+      background: #42a5f5;
+    }
   </style>
 </head>
 <body>
@@ -363,6 +459,42 @@
           </tbody>
         </table>
       </div>
+    </div>
+  </div>
+
+  <!-- Edit Workout Modal -->
+  <div id="edit-workout-modal" class="modal-overlay">
+    <div class="modal">
+      <h2>Edit Workout</h2>
+      <form id="edit-workout-form" class="modal-form">
+        <div>
+          <label for="edit-workout-dow">Day of Week</label>
+          <select id="edit-workout-dow" required>
+            <option value="Monday">Monday</option>
+            <option value="Tuesday">Tuesday</option>
+            <option value="Wednesday">Wednesday</option>
+            <option value="Thursday">Thursday</option>
+            <option value="Friday">Friday</option>
+            <option value="Saturday">Saturday</option>
+            <option value="Sunday">Sunday</option>
+          </select>
+        </div>
+
+        <div>
+          <label for="edit-workout-name">Workout</label>
+          <input type="text" id="edit-workout-name" required>
+        </div>
+
+        <div>
+          <label for="edit-workout-notes">Notes</label>
+          <input type="text" id="edit-workout-notes" placeholder="Optional">
+        </div>
+
+        <div class="modal-actions">
+          <button type="button" class="btn-cancel" id="edit-workout-cancel">Cancel</button>
+          <button type="submit" class="btn-save">Save Changes</button>
+        </div>
+      </form>
     </div>
   </div>
 
