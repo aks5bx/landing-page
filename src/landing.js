@@ -30,7 +30,7 @@ async function init() {
 
   if (!session) {
     // Redirect to index.html if not authenticated
-    window.location.href = '/index.html';
+    window.location.href = 'index.html';
     return;
   }
 
@@ -41,7 +41,7 @@ async function init() {
   // Listen for auth changes
   supabase.auth.onAuthStateChange((_event, session) => {
     if (!session) {
-      window.location.href = '/index.html';
+      window.location.href = 'index.html';
     }
   });
 }

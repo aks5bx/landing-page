@@ -299,13 +299,13 @@ async function init() {
     ]);
   } else {
     // Redirect to login
-    window.location.href = '/index.html';
+    window.location.href = 'index.html';
   }
 
   // Listen for auth changes
   supabase.auth.onAuthStateChange((_event, session) => {
     if (!session) {
-      window.location.href = '/index.html';
+      window.location.href = 'index.html';
     }
   });
 }

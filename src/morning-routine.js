@@ -63,13 +63,13 @@ async function init() {
     await loadMorningRoutine();
   } else {
     // Redirect to login
-    window.location.href = '/index.html';
+    window.location.href = 'index.html';
   }
 
   // Listen for auth changes
   supabase.auth.onAuthStateChange((event, session) => {
     if (!session) {
-      window.location.href = '/index.html';
+      window.location.href = 'index.html';
     }
   });
 }

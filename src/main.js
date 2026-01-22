@@ -54,7 +54,7 @@ async function init() {
       currentUser = session.user;
       // Redirect to landing page on new sign in
       if (event === 'SIGNED_IN') {
-        window.location.href = '/landing.html';
+        window.location.href = 'landing.html';
       } else {
         showApp();
       }
