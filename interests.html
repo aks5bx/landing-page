@@ -310,6 +310,118 @@
     .btn-save:hover {
       background: #ff5252;
     }
+
+    @media (max-width: 768px) {
+      body {
+        padding: 10px;
+      }
+
+      .header {
+        flex-direction: column;
+        gap: 15px;
+        padding: 15px;
+      }
+
+      .header-left {
+        flex-direction: column;
+        gap: 15px;
+        align-items: stretch;
+        width: 100%;
+      }
+
+      .header h1 {
+        font-size: 22px;
+        text-align: center;
+      }
+
+      .tabs {
+        width: 100%;
+      }
+
+      .tabs-row {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .tab-btn {
+        padding: 8px 10px;
+        font-size: 12px;
+        flex: 0 1 auto;
+      }
+
+      .user-info {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      .user-email {
+        font-size: 12px;
+      }
+
+      .section {
+        padding: 15px;
+        overflow-x: auto;
+      }
+
+      .section h2 {
+        font-size: 20px;
+      }
+
+      .add-form {
+        grid-template-columns: 1fr;
+      }
+
+      .btn-add {
+        width: 100%;
+        padding: 12px;
+      }
+
+      .table {
+        font-size: 13px;
+        min-width: 400px;
+      }
+
+      .table th,
+      .table td {
+        padding: 10px 8px;
+      }
+
+      .btn-icon {
+        padding: 6px 8px;
+        font-size: 14px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .tabs-row {
+        gap: 5px;
+      }
+
+      .tab-btn {
+        padding: 6px 8px;
+        font-size: 11px;
+      }
+
+      .header h1 {
+        font-size: 20px;
+      }
+
+      .section h2 {
+        font-size: 18px;
+      }
+
+      .modal {
+        margin: 10px;
+        padding: 20px;
+        max-height: 90vh;
+        overflow-y: auto;
+      }
+
+      .modal h2 {
+        font-size: 20px;
+      }
+    }
   </style>
 </head>
 <body>
