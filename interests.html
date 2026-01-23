@@ -191,32 +191,6 @@
       background: #fdd;
     }
 
-    @media (max-width: 768px) {
-      .header {
-        flex-direction: column;
-        gap: 15px;
-      }
-
-      .header-left {
-        flex-direction: column;
-        gap: 15px;
-        align-items: flex-start;
-      }
-
-      .interests-content {
-        padding: 20px;
-      }
-
-      .interests-table {
-        font-size: 14px;
-      }
-
-      .interests-table th,
-      .interests-table td {
-        padding: 10px;
-      }
-    }
-
     /* Edit Modal */
     .modal-overlay {
       display: none;
@@ -377,14 +351,32 @@
         padding: 12px;
       }
 
-      .table {
-        font-size: 13px;
-        min-width: 400px;
+      .interests-content {
+        padding: 15px;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
       }
 
-      .table th,
-      .table td {
-        padding: 10px 8px;
+      .interests-content h2 {
+        font-size: 24px;
+      }
+
+      .interests-table {
+        font-size: 12px;
+        min-width: 420px;
+      }
+
+      .interests-table th,
+      .interests-table td {
+        padding: 8px 6px;
+      }
+
+      .interests-table td:nth-child(2),
+      .interests-table td:nth-child(3),
+      .interests-table td:nth-child(4) {
+        max-width: 80px;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
       }
 
       .btn-icon {
@@ -407,8 +399,24 @@
         font-size: 20px;
       }
 
-      .section h2 {
-        font-size: 18px;
+      .interests-content h2 {
+        font-size: 20px;
+      }
+
+      .interests-table {
+        font-size: 11px;
+        min-width: 360px;
+      }
+
+      .interests-table th,
+      .interests-table td {
+        padding: 6px 4px;
+      }
+
+      .interests-table td:nth-child(2),
+      .interests-table td:nth-child(3),
+      .interests-table td:nth-child(4) {
+        max-width: 60px;
       }
 
       .modal {

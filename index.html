@@ -617,21 +617,29 @@
       .tasks-section {
         padding: 15px;
         overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
       }
 
       .tasks-table {
-        font-size: 13px;
-        min-width: 600px;
+        font-size: 12px;
+        min-width: 450px;
       }
 
       .tasks-table th,
       .tasks-table td {
-        padding: 10px 8px;
+        padding: 8px 6px;
+      }
+
+      .tasks-table td:first-child {
+        max-width: 120px;
+        word-wrap: break-word;
+        overflow-wrap: break-word;
       }
 
       .status-badge {
-        padding: 4px 8px;
-        font-size: 11px;
+        padding: 3px 6px;
+        font-size: 10px;
+        white-space: nowrap;
       }
 
       .task-actions {
@@ -639,8 +647,15 @@
       }
 
       .btn-icon {
-        padding: 6px 8px;
-        font-size: 14px;
+        padding: 5px 6px;
+        font-size: 12px;
+      }
+
+      .block-reason {
+        font-size: 11px;
+        max-width: 80px;
+        overflow: hidden;
+        text-overflow: ellipsis;
       }
 
       .auth-card {
@@ -679,12 +694,32 @@
       }
 
       .tasks-table {
-        font-size: 12px;
+        font-size: 11px;
+        min-width: 380px;
+      }
+
+      .tasks-table th,
+      .tasks-table td {
+        padding: 6px 4px;
+      }
+
+      .tasks-table td:first-child {
+        max-width: 100px;
       }
 
       .btn-add {
         width: 100%;
         padding: 12px;
+      }
+
+      .status-badge {
+        padding: 2px 4px;
+        font-size: 9px;
+      }
+
+      .btn-icon {
+        padding: 4px 5px;
+        font-size: 11px;
       }
     }
   </style>
