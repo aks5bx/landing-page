@@ -276,28 +276,131 @@
     }
 
     @media (max-width: 768px) {
+      body {
+        padding: 10px;
+      }
+
       .header {
         flex-direction: column;
         gap: 15px;
+        padding: 15px;
       }
 
       .header-left {
         flex-direction: column;
         gap: 15px;
-        align-items: flex-start;
+        align-items: stretch;
+        width: 100%;
+      }
+
+      .header h1 {
+        font-size: 22px;
+        text-align: center;
+      }
+
+      .tabs {
+        width: 100%;
+      }
+
+      .tabs-row {
+        flex-wrap: wrap;
+        justify-content: center;
+      }
+
+      .tab-btn {
+        padding: 8px 10px;
+        font-size: 12px;
+        flex: 0 1 auto;
+      }
+
+      .user-info {
+        width: 100%;
+        justify-content: center;
+        flex-wrap: wrap;
+      }
+
+      .user-email {
+        font-size: 12px;
       }
 
       .routine-content {
-        padding: 20px;
+        padding: 15px;
+      }
+
+      .current-time {
+        font-size: 28px;
+        margin-bottom: 20px;
+      }
+
+      .schedules-container {
+        gap: 15px;
+      }
+
+      .schedule-section {
+        padding: 15px;
+      }
+
+      .schedule-section h2 {
+        font-size: 20px;
+      }
+
+      .schedule-item {
+        font-size: 14px;
+        padding: 8px 12px;
+      }
+
+      .workout-section {
+        padding: 15px;
+        overflow-x: auto;
+      }
+
+      .workout-section h2 {
+        font-size: 20px;
       }
 
       .workout-table {
-        font-size: 14px;
+        font-size: 13px;
+        min-width: 500px;
       }
 
       .workout-table th,
       .workout-table td {
         padding: 8px 10px;
+      }
+
+      .edit-btn {
+        padding: 6px 8px;
+        font-size: 14px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .tabs-row {
+        gap: 5px;
+      }
+
+      .tab-btn {
+        padding: 6px 8px;
+        font-size: 11px;
+      }
+
+      .header h1 {
+        font-size: 20px;
+      }
+
+      .current-time {
+        font-size: 22px;
+      }
+
+      .modal {
+        margin: 10px;
+        padding: 20px;
+        max-height: 90vh;
+        overflow-y: auto;
+      }
+
+      .modal h2 {
+        font-size: 20px;
       }
     }
 
